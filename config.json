@@ -1,0 +1,26 @@
+{
+  "log_level": "debug",
+  "log_file": "stderr",
+  "secrets": {
+    "/etc/certs": {
+      "type": "certs",
+      "vault_path": "pki/issue/es-datio",
+      "parameters": {
+        "common_name": "gocd.es.datio",
+        "ttl": "24h",
+        "alt_names": [
+          "gocd"
+        ],
+        "ip_sans": [
+          "10.142.242.119"
+        ],
+        "key_name": "gocd.key",
+        "cert_name": "gocd.crt"
+      }
+    }
+  },
+  "ca_cert_path": "/etc/certs/ca.crt",
+  "insecure": false,
+  "vault_addr": "https://vault.es.datio:8200",
+  "vault_token": "token"
+}

@@ -1,0 +1,10 @@
+package: github.com/DatioBD/retrievault
+import:
+- package: gopkg.in/urfave/cli.v2
+  version: ^1.18.1
+- package: github.com/Sirupsen/logrus
+  version: ~0.11.0
+- package: github.com/hashicorp/vault
+  version: ~0.6.2
+  subpackages:
+  - api

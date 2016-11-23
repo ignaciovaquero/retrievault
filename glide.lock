@@ -1,0 +1,16 @@
+hash: e27d57bdffeac8b4a33e1afe414d8b460e0e842b403498e360224c88b3847ea2
+updated: 2016-11-15T17:17:13.242687344+01:00
+imports:
+- name: github.com/hashicorp/vault
+  version: 22619b6786724c8eca5340a63395bf3058e1e3f7
+  subpackages:
+  - api
+- name: github.com/Sirupsen/logrus
+  version: d26492970760ca5d33129d2d799e34be5c4782eb
+- name: golang.org/x/sys
+  version: b699b7032584f0953262cb2788a0ca19bb494703
+  subpackages:
+  - unix
+- name: gopkg.in/urfave/cli.v2
+  version: a14d7d367bc02b1f57d88de97926727f2d936387
+testImports: []
