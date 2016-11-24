@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/Sirupsen/logrus"
 	"gopkg.in/urfave/cli.v2"
@@ -32,7 +33,10 @@ func run(c *cli.Context) error {
 	if err != nil {
 		return cli.NewExitError(fmt.Sprintf("Error setting up %s", appName), 1)
 	}
-	err = retrievault.FetchSecrets(context.Background())
+	timeout, _ := time.ParseDuration("30s")
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+	err = retrievault.FetchSecrets(ctx)
 	if err != nil {
 		return cli.NewExitError("Error retrieving secrets", 1)
 	}

@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"sync"
 
 	env "github.com/DatioBD/retrievault/utils/environment"
 	"github.com/DatioBD/retrievault/utils/log"
@@ -15,10 +17,8 @@ import (
 type Retriever interface {
 
 	// FetchSecret fetches a secret from Vault and returns any error encountered.
-	FetchSecret(ctx context.Context, s Secret) (api.Secret, error)
+	FetchSecret(ctx context.Context, vaultPath, dest string, client *api.Logical, e chan error)
 }
-
-type destPath string
 
 // RetrieveVault is a struct which holds the configuration for the application
 type RetrieVault struct {
@@ -32,7 +32,7 @@ type RetrieVault struct {
 	// Secrets is a map that has path values as keys, and Secret structures as
 	// values. The secrets, once fetched, will be stored at the path indicated
 	// in the keys
-	Secrets map[destPath]Secret `json:"secrets"`
+	Secrets map[string]Secret `json:"secrets"`
 
 	// CACertPath is the path to a PEM-encoded CA cert file to use to verify the
 	// Vault server SSL certificate.
@@ -49,7 +49,9 @@ type RetrieVault struct {
 
 	// VaultToken is the Vault token used to retrieve all secrets
 	VaultToken string `json:"vault_token,omitempty"`
-	client     *api.Logical
+
+	client *api.Logical
+	wg     *sync.WaitGroup
 }
 
 // Secret is a struct that contains information about how to retrieve
@@ -108,7 +110,7 @@ func setupApp(configPath string) (*RetrieVault, error) {
 			return nil, err
 		}
 	}
-	if retrievault.VaultAddr != "" {
+	if retrievault.VaultAddr != "" { // this allows to use localhost if not set
 		config.Address = retrievault.VaultAddr
 	}
 	if err := config.ReadEnvironment(); err != nil {
@@ -130,7 +132,50 @@ func setupApp(configPath string) (*RetrieVault, error) {
 }
 
 func (r *RetrieVault) FetchSecrets(ctx context.Context) error {
-	for path, secret := range r.Secrets {
+	cancelCtx, cancel := context.WithCancel(ctx)
+	defer cancel()
+	r.wg.Add(len(r.Secrets))
+	e := make(chan error)
+	for dir, secret := range r.Secrets {
+		select {
+		// If we cancel the parent context, we must return inmediately
+		case <-ctx.Done():
+			log.Msg.WithField("msg", ctx.Err().Error()).Error("Context cancelled")
+			return ctx.Err()
+		default:
+		}
+		var err error
+		var retr Retriever
+		if secret.Type == "certs" {
+			retr = new(Certs)
+			err = json.Unmarshal(secret.Parameters, retr)
+		} else if secret.Type == "generic" {
+			retr = new(Generic)
+			err = json.Unmarshal(secret.Parameters, retr)
+		} else {
+			log.Msg.WithField("secret_type", secret.Type).Error("Invalid type.")
+			return fmt.Errorf("Invalid secret type %s", secret.Type)
+		}
 
+		if err != nil {
+			log.Msg.WithFields(logrus.Fields{
+				"msg":         err.Error(),
+				"secret_type": secret.Type,
+				"params":      secret.Parameters,
+			}).Error("Unable to unmarshall parameters for this secret Type")
+			return err
+		}
+		go retr.FetchSecret(cancelCtx, secret.VaultPath, dir, r.client, e)
+		select {
+		case err := <-e:
+			log.Msg.WithFields(logrus.Fields{
+				"msg":    err.Error(),
+				"secret": secret,
+			}).Error("Error when fetching secret")
+			return err
+		default:
+		}
 	}
+	r.wg.Wait()
+	return nil
 }

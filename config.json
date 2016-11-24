@@ -14,8 +14,28 @@
         "ip_sans": [
           "10.142.242.119"
         ],
-        "key_name": "gocd.key",
-        "cert_name": "gocd.crt"
+        "key": {
+          "name": "gocd.key",
+          "perm": "0600"
+        },
+        "cert": {
+          "name": "gocd.crt",
+          "perm": "0644"
+        }
+      }
+    },
+    "/etc/ssh": {
+      "type": "generic",
+      "vault_path": "gocd/github_ssh_keys",
+      "parameters": {
+        "private": {
+          "name": "id_rsa_github",
+          "perm": "0600"
+        },
+        "public": {
+          "name": "id_rsa_github.pub",
+          "perm": "644"
+        }
       }
     }
   },
