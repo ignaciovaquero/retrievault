@@ -13,11 +13,16 @@ import (
 	"github.com/hashicorp/vault/api"
 )
 
+const (
+	certs   = "certs"
+	generic = "generic"
+)
+
 // Retriever is an interface that wraps the basic FetchSecret method.
 type Retriever interface {
 
 	// FetchSecret fetches a secret from Vault and returns any error encountered.
-	FetchSecret(ctx context.Context, vaultPath, dest string, client *api.Logical, e chan error)
+	FetchSecret(ctx context.Context, vaultPath, dest string, client *api.Logical, wg *sync.WaitGroup, e chan error)
 }
 
 // RetrieveVault is a struct which holds the configuration for the application
@@ -76,6 +81,7 @@ func (retrievault *RetrieVault) readConfiguration(path string) error {
 
 func setupApp(configPath string) (*RetrieVault, error) {
 	retrievault := new(RetrieVault)
+	retrievault.wg = new(sync.WaitGroup)
 	if err := retrievault.readConfiguration(configPath); err != nil {
 		log.Msg.WithField("msg", err.Error()).Error("Error when reading configuration")
 		return nil, err
@@ -146,13 +152,14 @@ func (r *RetrieVault) FetchSecrets(ctx context.Context) error {
 		}
 		var err error
 		var retr Retriever
-		if secret.Type == "certs" {
-			retr = new(Certs)
+		switch secret.Type {
+		case certs:
+			retr = NewCerts()
 			err = json.Unmarshal(secret.Parameters, retr)
-		} else if secret.Type == "generic" {
-			retr = new(Generic)
+		case generic:
+			retr = NewGeneric()
 			err = json.Unmarshal(secret.Parameters, retr)
-		} else {
+		default:
 			log.Msg.WithField("secret_type", secret.Type).Error("Invalid type.")
 			return fmt.Errorf("Invalid secret type %s", secret.Type)
 		}
@@ -165,7 +172,8 @@ func (r *RetrieVault) FetchSecrets(ctx context.Context) error {
 			}).Error("Unable to unmarshall parameters for this secret Type")
 			return err
 		}
-		go retr.FetchSecret(cancelCtx, secret.VaultPath, dir, r.client, e)
+
+		go retr.FetchSecret(cancelCtx, secret.VaultPath, dir, r.client, r.wg, e)
 		select {
 		case err := <-e:
 			log.Msg.WithFields(logrus.Fields{

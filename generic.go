@@ -13,9 +13,8 @@ import (
 )
 
 type Generic struct {
-	FileNames map[string]genericParams
-	secret    *api.Secret
-	wg        sync.WaitGroup
+	Keys   map[string]genericParams `json:"keys,omitempty"`
+	secret *api.Secret
 	writer
 }
 
@@ -23,7 +22,13 @@ type genericParams struct {
 	fileParameters
 }
 
-func (g *Generic) FetchSecret(ctx context.Context, vaultPath, dest string, client *api.Logical, e chan error) {
+func NewGeneric() *Generic {
+	return &Generic{writer: writer{wg: new(sync.WaitGroup)}}
+}
+
+func (g *Generic) FetchSecret(ctx context.Context, vaultPath, dest string, client *api.Logical, wg *sync.WaitGroup, e chan error) {
+	log.Msg.WithField("vault_path", vaultPath).Debug("Fetching secret at path")
+	defer wg.Done()
 	secrets, err := client.Read(vaultPath)
 	if err != nil {
 		e <- err
@@ -48,9 +53,13 @@ func (g *Generic) FetchSecret(ctx context.Context, vaultPath, dest string, clien
 			return
 		}
 		file := fmt.Sprintf("%s/%s", dest, key)
-		if fileName, ok := g.FileNames[key]; ok {
-			if fileName.Name != "" {
-				file = fmt.Sprintf("%s/%s", dest, fileName.Name)
+		if fileName, ok := g.Keys[key]; ok {
+			if fileName.Path != "" {
+				if path.IsAbs(path.Clean(fileName.Path)) {
+					file = fileName.Path
+				} else {
+					file = fmt.Sprintf("%s/%s", dest, fileName.Path)
+				}
 			}
 			if fileName.Perm != "" {
 				var err error
@@ -62,6 +71,7 @@ func (g *Generic) FetchSecret(ctx context.Context, vaultPath, dest string, clien
 				}
 			}
 		}
+		log.Msg.WithField("perm", perm).Debug("Permissions applied")
 		go g.writeInFile(path.Clean(file), []byte(stringSecret), perm, er)
 		select {
 		case err := <-er:

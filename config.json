@@ -2,44 +2,50 @@
   "log_level": "debug",
   "log_file": "stderr",
   "secrets": {
-    "/etc/certs": {
+    "./certs": {
       "type": "certs",
       "vault_path": "pki/issue/es-datio",
       "parameters": {
         "common_name": "gocd.es.datio",
         "ttl": "24h",
         "alt_names": [
-          "gocd"
+          "gocd-lol.es.datio"
         ],
         "ip_sans": [
           "10.142.242.119"
         ],
         "key": {
-          "name": "gocd.key",
+          "path": "gocd.key",
           "perm": "0600"
         },
         "cert": {
-          "name": "gocd.crt",
+          "path": "gocd.crt",
           "perm": "0644"
+        },
+        "ca_cert": {
+          "path": "ca.crt",
+          "perm": "0600"
         }
       }
     },
-    "/etc/ssh": {
+    "./ssh": {
       "type": "generic",
       "vault_path": "gocd/github_ssh_keys",
       "parameters": {
-        "private": {
-          "name": "id_rsa_github",
-          "perm": "0600"
-        },
-        "public": {
-          "name": "id_rsa_github.pub",
-          "perm": "644"
+        "keys": {
+          "private": {
+            "path": "id_rsa_github",
+            "perm": "0600"
+          },
+          "public": {
+            "path": "id_rsa_github.pub",
+            "perm": "0644"
+          }
         }
       }
     }
   },
-  "ca_cert_path": "/etc/certs/ca.crt",
+  "ca_cert_path": "/usr/local/share/ca-certificates/ca.crt",
   "insecure": false,
   "vault_addr": "https://vault.es.datio:8200",
   "vault_token": "token"
