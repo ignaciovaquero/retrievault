@@ -6,17 +6,18 @@ import (
 	"os"
 	"time"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/DatioBD/retrievault/retrievault"
 	"gopkg.in/urfave/cli.v2"
 )
 
-var _ = logrus.DebugLevel
 var app = cli.NewApp()
 var appName = "retrievault"
 
 func init() {
 	app.Name = appName
-	app.Usage = "Retrieve Vault secrets and expose them into files or environment variables"
+	app.Usage = "Retrieve Vault secrets and expose them into files"
+	app.Author = "Devops Datio Big Data"
+	app.Email = "devops@datiobd.com"
 	app.Version = "0.1.0"
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
@@ -29,14 +30,14 @@ func init() {
 }
 
 func run(c *cli.Context) error {
-	retrievault, err := setupApp(c.String("config"))
+	rvault, err := retrievault.SetupApp(c.String("config"))
 	if err != nil {
 		return cli.NewExitError(fmt.Sprintf("Error setting up %s", appName), 1)
 	}
 	timeout, _ := time.ParseDuration("30s")
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
-	err = retrievault.FetchSecrets(ctx)
+	err = rvault.FetchSecrets(ctx)
 	if err != nil {
 		return cli.NewExitError("Error retrieving secrets", 1)
 	}

@@ -2,17 +2,17 @@ package log
 
 import "testing"
 
-type testpair struct {
+type testlevel struct {
 	value    string
 	loglevel string
 	e        bool
 }
 
-var testpairs = []*testpair{
-	&testpair{"error", "error", false},
-	&testpair{"Warn", "warning", false},
-	&testpair{"", "", true},
-	&testpair{"12", "", true},
+var testpairs = []*testlevel{
+	&testlevel{"error", "error", false},
+	&testlevel{"Warn", "warning", false},
+	&testlevel{"", "", true},
+	&testlevel{"12", "", true},
 }
 
 func TestSetLogLevel(t *testing.T) {
@@ -22,7 +22,7 @@ func TestSetLogLevel(t *testing.T) {
 			if err == nil {
 				t.Error("For", pair.value,
 					"expected non nil error",
-					"got", "nil error")
+					"got nil error")
 			}
 		} else {
 			resultLogLevel := Msg.Level.String()
