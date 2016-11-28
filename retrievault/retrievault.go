@@ -77,11 +77,15 @@ func (retrievault *RetrieVault) readConfiguration(path string) error {
 	return nil
 }
 
-func SetupApp(configPath string) (*RetrieVault, error) {
+func SetupApp(configPath, logPath string) (*RetrieVault, error) {
 	retrievault := new(RetrieVault)
 	if err := retrievault.readConfiguration(configPath); err != nil {
 		log.Msg.WithField("msg", err.Error()).Error("Error when reading configuration")
 		return nil, err
+	}
+
+	if retrievault.LogFile == "" {
+		retrievault.LogFile = logPath
 	}
 
 	// Setting log configuration
@@ -100,7 +104,7 @@ func SetupApp(configPath string) (*RetrieVault, error) {
 
 	// Setting Vault client configuration
 	config := api.DefaultConfig()
-	if retrievault.CACertPath != "" {
+	if retrievault.CACertPath != "" || retrievault.Insecure {
 		tlsconfig := &api.TLSConfig{
 			CACert:   retrievault.CACertPath,
 			Insecure: retrievault.Insecure,
