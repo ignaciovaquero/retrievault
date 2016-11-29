@@ -40,7 +40,7 @@ func init() {
 func run(c *cli.Context) error {
 	rvault, err := retrievault.SetupApp(c.String("config"), c.String("log-file"))
 	if err != nil {
-		return cli.NewExitError(fmt.Sprintf("Error setting up %s", appName), 1)
+		return cli.NewExitError(fmt.Sprintf("Error setting up %s: %s", appName, err.Error()), 1)
 	}
 	timeout, _ := time.ParseDuration("30s")
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
@@ -48,7 +48,7 @@ func run(c *cli.Context) error {
 	log.Msg.Info("Fetching secrets...")
 	err = rvault.FetchSecrets(ctx)
 	if err != nil {
-		return cli.NewExitError("Error retrieving secrets", 1)
+		return cli.NewExitError(fmt.Sprintf("Error retrieving secrets: %s", err.Error()), 1)
 	}
 	log.Msg.Info("All secrets fetched successfully!")
 	return nil
