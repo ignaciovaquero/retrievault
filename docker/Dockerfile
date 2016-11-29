@@ -4,9 +4,10 @@ LABEL org.label-schema.schema-version="1.0" \
       org.label-schema.name="retrievault" \
       org.label-schema.description="Retrievault is a container which retrieves secrets from vault and saves them to files" \
       org.label-schema.vcs-url="https://github.com/DatioBD/retrievault" \
+      org.label-schema.vcs-ref="2e60e46" \
       org.label-schema.vendor="Datio Big Data" \
       org.label-schema.version="0.1.0-SNAPSHOT" \
-      org.label-schema.usage="https://github.com/DatioBD/retrievault/blob/master/README.md"
+      org.label-schema.usage="https://github.com/DatioBD/retrievault/blob/master/README.md" \
       org.label-schema.docker.cmd="docker run -d -e VAULT_TOKEN=<your_token> -v /path/to/vault/ca.crt:/usr/local/share/ca-certificates/ca.crt -v $(pwd)/config.json:/etc/retrievault/config/config.json eu.gcr.io/datio-sistemas/retrievault:0.1.0-SNAPSHOT"
 
 RUN mkdir -p /etc/my_init.d && \
