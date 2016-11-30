@@ -12,7 +12,9 @@ Retrieve [Vault](https://vaultproject.io) secrets and expose them into files or 
 - **Easy destination handling**: You can specify the destination path per secret, or even per element in a secret (e.g.: if you have multiple key-value pairs inside a single Generic secret, you can specify different file locations for each key-value pair).
 
 - **Easy permission handling**: Just like before, you can specify permission bits per secret or per element in a secret. Those permission bits are specified in octal notation, event if we know that JSON doesn't support them. They are parsed as strings and converted inside retrievault.
+
 ---
+
 ## Usage
 
 You can use **retrievault** both as a standalone script as well as a [Docker](https://www.docker.com/) container.
