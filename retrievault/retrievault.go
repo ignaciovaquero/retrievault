@@ -36,7 +36,7 @@ type RetrieVault struct {
 	// Secrets is a map that has path values as keys, and Secret structures as
 	// values. The secrets, once fetched, will be stored at the path indicated
 	// in the keys
-	Secrets map[string]Secret `json:"secrets"`
+	Secrets []*Secret `json:"secrets"`
 
 	// CACertPath is the path to a PEM-encoded CA cert file to use to verify the
 	// Vault server SSL certificate.
@@ -61,6 +61,7 @@ type RetrieVault struct {
 // a secret from Vault. Type can only be one of: certs, generic.
 type Secret struct {
 	Type       string          `json:"type"`
+	Path       string          `json:"path"`
 	VaultPath  string          `json:"vault_path"`
 	Parameters json.RawMessage `json:"parameters,omitempty"`
 }
@@ -146,8 +147,12 @@ func (r *RetrieVault) FetchSecrets(ctx context.Context) error {
 	cancelCtx, cancel := context.WithCancel(ctx)
 	defer cancel()
 	e := make(chan error)
-
-	for dir, secret := range r.Secrets {
+	wait := 0
+	for _, secret := range r.Secrets {
+		if secret.Path == "" {
+			log.Msg.WithField("secret", secret.VaultPath).Warn("No destination path specified for secret")
+			continue
+		}
 		select {
 		// If we cancel the parent context, we must return inmediately
 		case <-ctx.Done():
@@ -176,10 +181,11 @@ func (r *RetrieVault) FetchSecrets(ctx context.Context) error {
 			}).Error("Unable to unmarshall parameters for this secret Type")
 			return err
 		}
-		go retr.FetchSecret(cancelCtx, secret.VaultPath, dir, r.client, e)
+		go retr.FetchSecret(cancelCtx, secret.VaultPath, secret.Path, r.client, e)
+		wait++
 	}
 
-	for i := 0; i < len(r.Secrets); i++ {
+	for i := 0; i < wait; i++ {
 		select {
 		case <-ctx.Done():
 			log.Msg.WithField("msg", ctx.Err().Error()).Error("Context cancelled")

@@ -19,6 +19,9 @@ type fileParameters struct {
 
 func (w *writer) getDestAndPerms(defaultFile string, params fileParameters, dest string) (string, os.FileMode, error) {
 	perm := os.FileMode(0644)
+	if dest == "" {
+		dest = "." // relative to current directory
+	}
 	file := fmt.Sprintf("%s/%s", dest, defaultFile)
 	if params.Path != "" {
 		if path.IsAbs(path.Clean(params.Path)) {

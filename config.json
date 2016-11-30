@@ -1,9 +1,10 @@
 {
   "log_level": "debug",
   "log_file": "/var/log/retrievault.log",
-  "secrets": {
-    "/etc/retrievault/certs": {
+  "secrets": [
+    {
       "type": "certs",
+      "path": "/etc/retrievault/certs",
       "vault_path": "pki/issue/es-datio",
       "parameters": {
         "common_name": "gocd.es.datio",
@@ -28,8 +29,9 @@
         }
       }
     },
-    "/etc/retrievault/generic": {
+    {
       "type": "generic",
+      "path": "/etc/retrievault/generic",
       "vault_path": "gocd/github_ssh_keys",
       "parameters": {
         "keys": {
@@ -44,7 +46,7 @@
         }
       }
     }
-  },
+  ],
   "ca_cert_path": "/usr/local/share/ca-certificates/ca.crt",
   "insecure": true,
   "vault_addr": "https://vault.es.datio:8200",
