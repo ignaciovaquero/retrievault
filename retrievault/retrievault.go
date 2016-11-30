@@ -150,8 +150,7 @@ func (r *RetrieVault) FetchSecrets(ctx context.Context) error {
 	wait := 0
 	for _, secret := range r.Secrets {
 		if secret.Path == "" {
-			log.Msg.WithField("secret", secret.VaultPath).Warn("No destination path specified for secret")
-			continue
+			log.Msg.WithField("secret", secret.VaultPath).Warn("No destination path specified for secret. It will be set relative to the current directory.")
 		}
 		select {
 		// If we cancel the parent context, we must return inmediately
