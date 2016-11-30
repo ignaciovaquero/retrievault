@@ -77,7 +77,7 @@ func (retrievault *RetrieVault) readConfiguration(path string) error {
 	return nil
 }
 
-func SetupApp(configPath, logPath string) (*RetrieVault, error) {
+func SetupApp(configPath, logPath, loglevel string) (*RetrieVault, error) {
 	retrievault := new(RetrieVault)
 	if err := retrievault.readConfiguration(configPath); err != nil {
 		log.Msg.WithField("msg", err.Error()).Error("Error when reading configuration")
@@ -86,6 +86,10 @@ func SetupApp(configPath, logPath string) (*RetrieVault, error) {
 
 	if retrievault.LogFile == "" {
 		retrievault.LogFile = logPath
+	}
+
+	if retrievault.LogLevel == "" {
+		retrievault.LogLevel = loglevel
 	}
 
 	// Setting log configuration

@@ -33,12 +33,18 @@ func init() {
 			Usage:  "Path to the log file. Can be set to \"stderr\" or \"stdout\"",
 			EnvVar: "RETRIEVAULT_LOG_FILE",
 		},
+		cli.StringFlag{
+			Name:   "log-level",
+			Value:  "info",
+			Usage:  "Log level. Can be set to  \"debug\", \"info\", \"warn\", \"error\", \"fatal\" and \"panic\"",
+			EnvVar: "RETRIEVAULT_LOG_LEVEL",
+		},
 	}
 	app.Action = run
 }
 
 func run(c *cli.Context) error {
-	rvault, err := retrievault.SetupApp(c.String("config"), c.String("log-file"))
+	rvault, err := retrievault.SetupApp(c.String("config"), c.String("log-file"), c.String("log-level"))
 	if err != nil {
 		return cli.NewExitError(fmt.Sprintf("Error setting up %s: %s", appName, err.Error()), 1)
 	}
