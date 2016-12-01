@@ -5,26 +5,27 @@
     {
       "type": "certs",
       "path": "/etc/retrievault/certs",
-      "vault_path": "pki/issue/es-datio",
+      "vault_path": "pki/issue/rolename",
       "parameters": {
-        "common_name": "gocd.es.datio",
+        "common_name": "common-name.yourdomain.com",
         "ttl": "24h",
         "alt_names": [
-          "gocd-lol.es.datio"
+          "common.yourdomain.com",
+          "localhost"
         ],
         "ip_sans": [
-          "10.142.242.119"
+          "10.142.0.1"
         ],
         "key": {
-          "path": "gocd.key",
+          "path": "common.key",
           "perm": "0600"
         },
         "cert": {
-          "path": "gocd.crt",
+          "path": "common.crt",
           "perm": "0644"
         },
         "ca_cert": {
-          "path": "/etc/retrievault/ca-cert/ca.crt",
+          "path": "/etc/retrievault/ca-cert/common-ca.crt",
           "perm": "0644"
         }
       }
@@ -32,7 +33,7 @@
     {
       "type": "generic",
       "path": "/etc/retrievault/generic",
-      "vault_path": "gocd/github_ssh_keys",
+      "vault_path": "generic/github_ssh_keys",
       "parameters": {
         "keys": {
           "private": {
@@ -48,7 +49,7 @@
     }
   ],
   "ca_cert_path": "/usr/local/share/ca-certificates/ca.crt",
-  "insecure": true,
-  "vault_addr": "https://vault.es.datio:8200",
+  "insecure": false,
+  "vault_addr": "https://vault.yourdomain.es:8200",
   "vault_token": "token"
 }
