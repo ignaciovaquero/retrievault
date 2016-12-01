@@ -1,6 +1,23 @@
 # retrievault
 Retrieve [Vault](https://vaultproject.io) secrets and save them into files.
 
+## Table of contents
+
+- [Introduction](#introduction)
+- [Usage](#usage)
+  - [Type "generic"](#type-generic)
+    - [Example](#example)
+  - [Type "certs"](#type-certs)
+- [Deployment](#deployment)  
+  - [Standalone script](#standalone-script)
+    - [Download](#Download)
+    - [Run it!](#standalone-run-it)
+  - [Docker](#docker)
+    - [Build the image](#build-image)
+    - [Run it! :)](#docker-run-it)
+
+---
+
 ## Introduction
 
 **retrievault** is a tool that allow you to fetch [Vault](https://vaultproject.io) secrets and store them into files, in an easy way. Some of the features of retrievault are listed below:
@@ -94,7 +111,7 @@ Let's explain those options one by one:
   - **vault_path**: The Vault path to fetch the secret. This is mandatory.
   - **parameters**: Parameters specific to the secret type. See the corresponding secret type to find out more about this.
 
-### Type "generic"
+### Type "generic"<a name=type-generic></a>
 
 The "generic" type accepts the following `parameters`:
 - **keys**: This is a map where the keys are strings which match the key of the component of a secret, and the value are some parameteres related to the destination file. Let's have a closer look to this by means of an example.
@@ -152,7 +169,7 @@ We could also have specified an absolute `path` for one of the components. This 
 
 Then the component will be stored at `/etc/another/path/my_secret_2`, overriding the previous `/etc/some/path`.
 
-#### Type "certs"
+#### Type "certs"<a name=type-certs></a>
 
 The "certs" type accepts the following `parameters`:
 
@@ -172,7 +189,7 @@ We suggest you to have a look at the full example above, for an example of using
 
 As we mentioned before, we can use **retrievault** as a standalone script or as a Docker container.
 
-### Standalone script
+### Standalone script<a name=standalone-script></a>
 
 #### Download
 
@@ -182,7 +199,7 @@ You can download **retrievault** by executing the following command.
 wget -O /usr/local/bin/retrievault https://github.com/DatioBD/retrievault/raw/master/docker/retrievault
 ```
 
-#### Run it!
+#### Run it!<a name=standalone-run-it></a>
 
 Run **retrievault** by specifying the path to the config file:
 
@@ -198,7 +215,7 @@ retrievault --config /path/to/config.json --log-level debug --log-file stdout
 
 ### Docker
 
-#### Build the image
+#### Build the image<a name=build-image></a>
 
 Run the following commands in order to build the image:
 
@@ -210,7 +227,7 @@ cd docker
 docker build -t some-repo/retrievault:latest .
 ```
 
-#### Run it! :)
+#### Run it! :)<a name=docker-run-it></a>
 
 Run the following command in order to run the Docker container:
 
