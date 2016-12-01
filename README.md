@@ -10,7 +10,7 @@ Retrieve [Vault](https://vaultproject.io) secrets and save them into files.
   - [Type "certs"](#type-certs)
 - [Deployment](#deployment)  
   - [Standalone script](#standalone-script)
-    - [Download](#Download)
+    - [Download](#download)
     - [Run it!](#standalone-run-it)
   - [Docker](#docker)
     - [Build the image](#build-image)
