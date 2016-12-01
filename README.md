@@ -15,6 +15,7 @@ Retrieve [Vault](https://vaultproject.io) secrets and save them into files.
   - [Docker](#docker)
     - [Build the image](#build-image)
     - [Run it! :)](#docker-run-it)
+- [TODO](#todo)
 
 ---
 
@@ -236,3 +237,10 @@ docker run -d -v path/to/config.json:/etc/retrievault/config/config.json -e VAUL
 ```
 
 It should be advise to you that all secrets are stored inside the Docker container. In order to make them available to other docker containers, you should **mount a volume at the destination path of each secret fetched**, and share this volume across all the containers which must get this secret.
+
+## TODO
+
+- Improve logging
+- TESTS!!
+- Handle renewal of certificates and generic secrets
+- Compatibility with more Vault secret backends
