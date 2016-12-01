@@ -223,9 +223,7 @@ Run the following commands in order to build the image:
 ```
 git clone https://github.com/DatioBD/retrievault.git
 cd retrievault
-go build -o docker/retrievault
-cd docker
-docker build -t some-repo/retrievault:latest .
+make
 ```
 
 #### Run it! :)<a name=docker-run-it></a>
