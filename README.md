@@ -169,7 +169,7 @@ We could also have specified an absolute `path` for one of the components. This 
 
 Then the component will be stored at `/etc/another/path/my_secret_2`, overriding the previous `/etc/some/path`.
 
-#### Type "certs"<a name=type-certs></a>
+### Type "certs"<a name=type-certs></a>
 
 The "certs" type accepts the following `parameters`:
 
