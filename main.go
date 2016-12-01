@@ -23,18 +23,18 @@ func init() {
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:   "config",
-			Value:  "/etc/retrievault/config/config.json",
+			Value:  retrievault.DefaultConfigFile,
 			Usage:  "Path to the configuration file",
 			EnvVar: "RETRIEVAULT_CONFIG_FILE",
 		},
 		cli.StringFlag{
 			Name:   "log-file",
-			Value:  "/var/log/retrievault.log",
+			Value:  retrievault.DefaultLogPath,
 			Usage:  "Path to the log file. Can be set to \"stderr\" or \"stdout\"",
 			EnvVar: "RETRIEVAULT_LOG_FILE",
 		},
 		cli.StringFlag{
-			Name:   "log-level",
+			Name:   retrievault.DefaultLogLevel,
 			Value:  "info",
 			Usage:  "Log level. Can be set to  \"debug\", \"info\", \"warn\", \"error\", \"fatal\" and \"panic\"",
 			EnvVar: "RETRIEVAULT_LOG_LEVEL",

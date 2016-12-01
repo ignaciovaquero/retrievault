@@ -13,8 +13,11 @@ import (
 )
 
 const (
-	certs   = "certs"
-	generic = "generic"
+	DefaultConfigFile = "/etc/retrievault/config/config.json"
+	DefaultLogPath    = "/var/log/retrievault.log"
+	DefaultLogLevel   = "info"
+	certs             = "certs"
+	generic           = "generic"
 )
 
 // Retriever is an interface that wraps the basic FetchSecret method.
@@ -85,11 +88,11 @@ func SetupApp(configPath, logPath, loglevel string) (*RetrieVault, error) {
 		return nil, err
 	}
 
-	if retrievault.LogFile == "" {
+	if retrievault.LogFile == "" || logPath != DefaultLogPath {
 		retrievault.LogFile = logPath
 	}
 
-	if retrievault.LogLevel == "" {
+	if retrievault.LogLevel == "" || loglevel != DefaultLogLevel {
 		retrievault.LogLevel = loglevel
 	}
 
