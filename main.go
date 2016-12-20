@@ -34,8 +34,8 @@ func init() {
 			EnvVar: "RETRIEVAULT_LOG_FILE",
 		},
 		cli.StringFlag{
-			Name:   retrievault.DefaultLogLevel,
-			Value:  "info",
+			Name:   "log-level",
+			Value:  retrievault.DefaultLogLevel,
 			Usage:  "Log level. Can be set to  \"debug\", \"info\", \"warn\", \"error\", \"fatal\" and \"panic\"",
 			EnvVar: "RETRIEVAULT_LOG_LEVEL",
 		},
