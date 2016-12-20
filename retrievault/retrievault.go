@@ -167,7 +167,9 @@ func (r *RetrieVault) FetchSecrets(ctx context.Context) error {
 			err = json.Unmarshal(secret.Parameters, retr)
 		case generic:
 			retr = NewGeneric()
-			err = json.Unmarshal(secret.Parameters, retr)
+			if len(secret.Parameters) != 0 {
+				err = json.Unmarshal(secret.Parameters, retr)
+			}
 		default:
 			log.Msg.WithField("secret_type", secret.Type).Error("Invalid type.")
 			return fmt.Errorf("Invalid secret type %s", secret.Type)
