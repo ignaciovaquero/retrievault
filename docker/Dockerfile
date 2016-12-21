@@ -4,7 +4,7 @@ LABEL org.label-schema.schema-version="1.0" \
       org.label-schema.name="retrievault" \
       org.label-schema.description="Retrievault is a container which retrieves secrets from vault and saves them to files" \
       org.label-schema.vcs-url="https://github.com/DatioBD/retrievault" \
-      org.label-schema.vcs-ref="fe16e0e" \
+      org.label-schema.vcs-ref="d05275f" \
       org.label-schema.vendor="Datio Big Data" \
       org.label-schema.version="0.2.0-SNAPSHOT" \
       org.label-schema.usage="https://github.com/DatioBD/retrievault/blob/master/README.md" \
@@ -19,7 +19,8 @@ RUN mkdir -p /etc/my_init.d && \
 ADD retrievault /usr/bin/retrievault
 ADD update_ca_certs.sh /etc/my_init.d/0_update_ca_certs.sh
 ADD retrievault.sh /etc/my_init.d/retrievault.sh
-ADD output_log.sh /etc/my_init.d/zz_output_log.sh
+# Uncomment the following line if you want the container not to finish.
+# ADD output_log.sh /etc/my_init.d/zz_output_log.sh
 
 # Clean up APT.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
