@@ -1,4 +1,4 @@
-FROM alpine:3.4
+FROM debian:jessie-slim
 
 LABEL org.label-schema.schema-version="1.0" \
       org.label-schema.name="retrievault" \
@@ -12,10 +12,10 @@ LABEL org.label-schema.schema-version="1.0" \
 
 ARG DUMB_INIT_VERSION=1.2.0
 
-RUN apk update && apk add vim=7.4.1831-r2 \
-                          ca-certificates=20160104-r4 \
-                          curl=7.51.0-r0 \
-                          openssl=1.0.2j-r0 && \
+RUN apt-get update && apt-get install -y vim=2:7.4.488-7+deb8u1 \
+                          ca-certificates=20141019+deb8u1 \
+                          curl=7.38.0-4+deb8u5 \
+                          openssl=1.0.1t-1+deb8u5 && \
     curl -sSL https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_amd64 > /usr/local/bin/dumb-init && \
     chmod 0755 /usr/local/bin/dumb-init && \
     mkdir -p /etc/retrievault/config && \
@@ -32,5 +32,5 @@ VOLUME /usr/local/share/ca-certificates \
        /etc/retrievault/ca-cert \
        /etc/retrievault/generic
 
-ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 CMD ["/entrypoint.sh"]
